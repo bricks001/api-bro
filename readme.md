@@ -2,13 +2,9 @@ rGJ8TXfT2KRCwLcGU71dUrpiqMCMfuRtt8 - normal wallet
 
 
 
-    //     getAllTransactions(address)
-    // .then(transactions => {
-    //     console.log('Transactions:', transactions);
-    // })
-    // .catch(error => {
-    //     console.error('Failed to fetch transactions:', error);
-    // });
+   
+
+
     // sendXRP(senderAddress, senderSecret, recipientAddress, destinationTag, amount)
     // .then(result => {
     //     console.log('Transaction successful:', result);

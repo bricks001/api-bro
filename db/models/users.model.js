@@ -47,6 +47,14 @@ const UserSchema = new Schema({
         default: 0,
         type: Number
     },
+    total_withdraw: {
+        default: 0,
+        type: Number
+    },
+    nextPayout: {
+        default: 'null',
+        type: String
+    },
     referredBy: {
          type:String,
         default: 'admin'

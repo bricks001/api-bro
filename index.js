@@ -4,6 +4,7 @@ dotenv.config({path:'.env.local'});
 import registerUser from './routes/user/register.route.js'
 import scanMe from './routes/user/viewUser.route.js'
 import loginUser from './routes/user/login.route.js'
+import listAllUserTransactions from './routes/user/fetchTransactions.route.js'
 import cors from 'cors';
 
 // loggers 
@@ -27,6 +28,7 @@ app.use(express.urlencoded({extended: false}))
 
 // routes 
 app.use('/api/v1/user/', registerUser, loginUser, scanMe)
+app.use('/api/v1/transaction/', listAllUserTransactions)
 
 
 

@@ -13,15 +13,15 @@ const api = new RippleAPI({ server: 'wss://s1.ripple.com' }); // Ripple public s
 export async function createXRPWallet() {
     // Generate a new seed
     const seed = rippleKeypairs.generateSeed();
-   // console.log('Seed:', seed);
+    console.log('Seed:', seed);
 
     // Derive keypair from seed
     const keypair = rippleKeypairs.deriveKeypair(seed);
-   // console.log('Keypair:', keypair);
+    console.log('Keypair:', keypair);
 
     // Generate address from public key
     const address = rippleKeypairs.deriveAddress(keypair.publicKey);
-   // console.log('Address:', address);
+    console.log('Address:', address);
 
     return {
         seed,
@@ -39,7 +39,8 @@ export async function getXrpBalance(address) {
         return accountInfo.xrpBalance;
     } catch (error) {
         console.error('Error fetching balance:', error);
-        throw error;
+        return 0
+        // throw new Error(error.toString());
     } finally {
         await api.disconnect();
     }
@@ -68,23 +69,34 @@ function getClassicAddress(xAddress) {
 }
 
 // Fetch all transactions for the given address
+/**
+ * Fetches all transactions for a given XRP wallet address.
+ * @param {string} address - The XRP wallet address.
+ * @returns {Promise<Array>} - A promise that resolves to the list of transactions.
+ */
 export async function getAllTransactions(address) {
+    let transactions = [];
     try {
-        await api.connect();
+        if (!api.isConnected()) {
+            await api.connect();
+            console.log('API CONNECTED');
+        }
 
         // Convert X-address to classic address if necessary
-        const classicAddress = isXAddress(address) ? getClassicAddress(address) : address;
+        const classicAddress = isXAddress(address)
+            ? xAddressToClassicAddress(address).classicAddress
+            : address;
 
-        // Fetch transactions
+        // Set up options for transaction fetching
         const options = {
-            limit: 20, // Number of transactions to fetch per request, adjust as needed
-            ledger_index_min: -1, // Fetch from earliest available ledger
+            limit: 20, // Adjust the limit as needed
+            ledger_index_min: -1, // Fetch from the earliest available ledger
             ledger_index_max: -1, // Fetch up to the most recent ledger
         };
 
-        let transactions = [];
         let marker;
 
+        // Loop to fetch transactions
         do {
             const response = await api.request('account_tx', {
                 account: classicAddress,
@@ -93,21 +105,35 @@ export async function getAllTransactions(address) {
                 limit: options.limit,
                 marker: marker
             });
+            console.log('response====================================');
+            console.log(response);
+            console.log(transactions.length + "transactions length");
+            console.log('====================================');
+            // Ensure response contains transactions
+            if (response.transactions) {
+                transactions = transactions.concat(response.transactions);
+            }
 
-            transactions = transactions.concat(response.transactions);
             marker = response.marker;
+            if(transactions.length>30){
+                break;
+            }
 
-        } while (marker); // Continue fetching until no marker is returned
-
-        await api.disconnect();
+        } while (!transactions || marker); // Continue fetching until no marker is returned
 
         return transactions;
     } catch (error) {
         console.error('Error fetching transactions:', error);
-        await api.disconnect();
-        throw error;
+        return transactions
+
+    } finally {
+        if (api.isConnected()) {
+            await api.disconnect();
+            console.log('API DISCONNECTED');
+        }
     }
 }
+
 
 
 // Create a wallet instance from seed
