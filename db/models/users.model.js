@@ -59,6 +59,10 @@ const UserSchema = new Schema({
          type:String,
         default: 'admin'
     },
+    wallet: {
+        address: String,
+        tag: String
+    },
     kyc:{
         status: {
             type:String,

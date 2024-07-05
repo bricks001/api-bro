@@ -13,7 +13,7 @@ import usersModel from '../db/models/users.model.js';
         let tokenInfo = await jwt.verify(token, 'jwt')
         let { _id } = tokenInfo;
         // verify user is in db 
-        let userIdIsInDB = await usersModel.findOne({_id}, { password: 0, kyc: 0 });
+        let userIdIsInDB = await usersModel.findOne({_id}, { password: 0 });
         // confirm user is not blocked by admin 
         if (!userIdIsInDB) return res.status(403).json({ msg: 'unauthorized user in session, kindly login to continue' })
         if (userIdIsInDB.status === 'suspended') throw new Error('account permissions do not exist, suspended account')

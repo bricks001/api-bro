@@ -5,6 +5,8 @@ import registerUser from './routes/user/register.route.js'
 import scanMe from './routes/user/viewUser.route.js'
 import loginUser from './routes/user/login.route.js'
 import listAllUserTransactions from './routes/user/fetchTransactions.route.js'
+import unstakeFunds from './routes/user/unstakeFunds.js'
+import modifyInfo from './routes/user/modifyInfo.js'
 import cors from 'cors';
 
 // loggers 
@@ -27,8 +29,9 @@ app.use(express.urlencoded({extended: false}))
 
 
 // routes 
-app.use('/api/v1/user/', registerUser, loginUser, scanMe)
+app.use('/api/v1/user/', registerUser, loginUser, scanMe, modifyInfo)
 app.use('/api/v1/transaction/', listAllUserTransactions)
+app.use('/api/v1/funds/', unstakeFunds)
 
 
 
