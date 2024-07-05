@@ -13,15 +13,15 @@ const api = new RippleAPI({ server: 'wss://s1.ripple.com' }); // Ripple public s
 export async function createXRPWallet() {
     // Generate a new seed
     const seed = rippleKeypairs.generateSeed();
-    console.log('Seed:', seed);
+   // console.log('Seed:', seed);
 
     // Derive keypair from seed
     const keypair = rippleKeypairs.deriveKeypair(seed);
-    console.log('Keypair:', keypair);
+   // console.log('Keypair:', keypair);
 
     // Generate address from public key
     const address = rippleKeypairs.deriveAddress(keypair.publicKey);
-    console.log('Address:', address);
+   // console.log('Address:', address);
 
     return {
         seed,
